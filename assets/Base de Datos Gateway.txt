@@ -1,0 +1,91 @@
+create database gateway;
+use gateway;
+create table facturacion
+(id bigint not null primary key,                   
+project_code varchar (20) not null,
+project_name varchar (50) not null default 'Undefined',
+customer varchar (50) not null,
+PO_status varchar (10) not null, 
+PO_NO varchar (20) not null,
+PO_Line_NO int (5) not null,
+shipment_NO int (3) not null,
+site_code varchar (90) not null,
+site_name varchar (50) not null,
+item_code bigint (15) not null,
+item_desc varchar (200) not null default 'Undefined',
+requested_qty double not null,
+due_qty double not null,
+billed_qty double not null,
+unit_price double not null,
+line_amount double not null,
+unit varchar(5) not null,
+payment_terms varchar (150) not null,
+category varchar (150) not null,
+bidding_area varchar (30) not null default 'Undefined',
+publish_date datetime not null,
+status_cierre double not null default 0.0);
+
+create table usuarios
+(id_usuario int (5) primary key not null auto_increment,
+nombre varchar (30) not null,
+ape_pat varchar (30) not null,
+ape_mat varchar (30) not null,
+nombre_usuario varchar (30) not null,
+password varchar (30) not null,
+cat_usuario varchar (30) not null);
+
+insert into usuarios values
+(null,'Alfredo','Bustamante','Torres','Alfredo Bustamante Torres','pass123','Administrador Principal'),
+(null,'Ana','Santillan','Perez','Ana Santillan Perez','rtp333','Administrador Facturacion'),
+(null,'Carlos','Torrido','Mujia','Sandrt','rtp343','Administrador Facturacion'),
+(null,'Sandra','Palmares','Gutierrez','Carls','rtp323','Administrador Facturacion'),
+(null,'Alejandro','Lopez','Portillo','Alejandro Lopez Portillo','zte','Administrador Cierre'),
+(null,'Eduardo','Reyes','Hernandez','Lalo222','1234','Administrador Entradas Almacen'),
+(null,'Pancho','Villa','Torres','Alfred98','pass123','Administrador Principal'),
+(null,'Francisco','Sanchez','Prado','Frank34','franklin','Administrador Principal'),
+(null,'Angel','Sanchez','Azuara','Antua','5467','Operador Entradas Almacen'),
+(null,'Sara','Lopez','Esparza','Wimb','p4567','Operador Salidas Almacen'),
+(null,'Karen','Salazar','Dominguez','Key3454','5678','Administrador Salidas Almacen');
+
+create table asignaciones
+(id_asignacion int (5) primary key not null auto_increment,
+fecha_asignacion timestamp not null,
+id bigint (15) not null unique key,
+id_usuario int (5) not null,
+orden_compra_dt varchar (15) not null default 'No Definido',
+importe double not null default 0.0, 
+total_pagar double not null default 0.0,
+status_facturacion double not null default 0.0);
+
+alter table asignaciones add constraint fk_datos_fact foreign key (id) references facturacion (id);
+alter table asignaciones add constraint fk_clave_usuario foreign key (id_usuario) references usuarios (id_usuario);
+
+create table historial_asignaciones
+(id_historial int (5) not null primary key auto_increment,
+id_asignacion int (5) not null default 0,
+fecha_asignacion datetime not null,
+id bigint (15) not null,
+id_usuario int (5) not null default 0,
+orden_compra_dt varchar (15) not null default 'No Definido',
+importe double not null default 0.0, 
+total_pagar double not null default 0.0,
+status_facturacion varchar (4) null default 0);
+
+alter table historial_asignaciones add constraint fk_clave_asignacion foreign key (id_asignacion) references asignaciones (id_asignacion);
+
+CREATE TABLE almacen(
+clave VARCHAR(10) NOT NULL PRIMARY KEY,
+descrip VARCHAR(200) NOT NULL,
+medida VARCHAR(40)NOT NULL,
+line VARCHAR(20)NOT NULL,
+f_ent DATE NOT NULL,
+stock INT NOT NULL,
+ult_cost DOUBLE NOT NULL);
+
+insert into almacen values 
+('FK21','Talachas','TT','2332D','2020-02-22',67,23.90),
+('TR55','Vehiculos','TT','323D','2019-03-22',78,90.99),
+('MTUR21','Oficina','TT','DSD','2020-02-23',9000,900.00),
+('RTYE33','Material','CH','SDS','2020-02-22',8990,590.99),
+('FGG45','Insumos','G','2332','2020-09-02',40000,120022.00);
+
